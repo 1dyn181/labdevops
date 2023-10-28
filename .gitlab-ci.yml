@@ -1,0 +1,26 @@
+stages:
+  - build
+  - deploy
+
+variables:
+  NAME: 1dyn/lab2
+  TAG: first 
+
+build:
+  stage: build
+  image: docker:20.10.16
+  services:
+    - docker:20.10.16-dind
+  script:
+    - docker login -u $user -p $password
+    - docker build -t $NAME:$TAG .
+    - docker push $NAME:$TAG
+
+running:
+  stage: deploy
+  image: docker:20.10.16
+  services:
+    - docker:20.10.16-dind
+  script:
+    - docker login -u $user -p $password
+    - docker run -d $NAME:$TAG
